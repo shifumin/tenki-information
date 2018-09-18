@@ -1,9 +1,11 @@
 version: '3'
 services:
-  capybara:
+  web:
     build: .
     tty: true
     stdin_open: true
+    environment:
+      - SLACK_API_TOKEN
     volumes:
       - .:/app
       - bundle-data:/usr/local/bundle
