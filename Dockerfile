@@ -1,11 +1,12 @@
-FROM ruby:2.5.1
+FROM ruby:2.6.2
 
 ENV LANG C.UTF-8
-ENV APP_ROOT /app
 
-RUN mkdir -p $APP_ROOT
-RUN gem update --system
-RUN gem install bundler && gem update bundler
+RUN mkdir /app
+WORKDIR /app
+
+RUN gem install bundler --no-document && \
+    gem update --system
 RUN apt-get update && apt-get install -y unzip && \
     CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` && \
     wget -N http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip -P ~/ && \
@@ -23,11 +24,8 @@ RUN mkdir /usr/share/fonts/noto
 RUN unzip NotoSansCJKjp-hinted.zip NotoSansCJKjp-Regular.otf NotoSansCJKjp-Bold.otf -d /usr/share/fonts/noto/
 RUN fc-cache -v
 
-WORKDIR $APP_ROOT
+COPY Gemfile Gemfile
+COPY Gemfile.lock Gemfile.lock
+RUN bundle install --jobs=4 --no-cache
 
-COPY ./Gemfile      Gemfile
-COPY ./Gemfile.lock Gemfile.lock
-
-RUN bundle install
-
-COPY ./ .
+COPY . .

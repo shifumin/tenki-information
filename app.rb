@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'capybara'
-require 'selenium-webdriver'
 require 'slack-ruby-client'
+require 'webdrivers'
 
 Slack.configure do |config|
   config.token = ENV['SLACK_API_TOKEN']
